@@ -1,3 +1,5 @@
+.. highlight:: rst
+
 Sphinx Contrib Session
 ======================
 

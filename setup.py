@@ -21,7 +21,7 @@ tests_require = [
 
 setup(
     name='sphinxcontrib-session',
-    version='1.1.0',
+    version='0.0.1',
     description="""
 Sphinx directive for "sessions", like typing into a console or Python prompt.
 """,
