@@ -72,6 +72,10 @@ def fix_token_newline(token, i):
 def visit_session_html(self, node):
     formatter = self.highlighter.get_formatter(nowrap=True)
 
+    if not hasattr(node, 'contains'):
+        print(node)
+        return
+
     data_node = node.contains[0]
 
     content = data_node.rawsource
