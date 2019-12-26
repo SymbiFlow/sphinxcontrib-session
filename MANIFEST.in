@@ -1,2 +1,3 @@
 include LICENSE
 include *.py
+include sphinxcontrib_session/session.css

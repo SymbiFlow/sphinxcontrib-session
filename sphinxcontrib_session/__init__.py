@@ -3,6 +3,9 @@
 
 import re
 
+import os
+from shutil import copyfile
+
 from docutils import nodes
 from docutils.parsers import rst
 
@@ -143,7 +146,25 @@ def depart_session_html(self, node):
     return
 
 
+def _is_html(app):
+    return app.builder.name in ('html', 'readthedocs')
+
+
+def add_stylesheet(app):
+    app.add_stylesheet('session.css')
+
+
+def copy_stylesheet(app, exception):
+    if not _is_html(app) or exception:
+        return
+
+    source = os.path.abspath(os.path.dirname(__file__))
+    dest = os.path.join(app.builder.outdir, '_static', 'session.css')
+    copyfile(os.path.join(source, "session.css"), dest)
+
+
 def setup(app):
+    app.connect('builder-inited', add_stylesheet)
+    app.connect('build-finished', copy_stylesheet)
     app.add_directive('session', SessionDirective)
     app.add_node(session, html=(visit_session_html, depart_session_html))
-
