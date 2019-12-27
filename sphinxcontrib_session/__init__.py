@@ -54,9 +54,6 @@ def to_data_content(token, i):
     else:
         extra = ''
 
-    print(repr(i))
-    print(m.groups())
-
     return '{} data-content="{}"></span>'.format(m.group(1), m.group(2)+extra+m.group(3))
 
 
@@ -68,43 +65,58 @@ def fix_token_newline(token, i):
     return i
 
 
+SESSION_TYPES = {
+    'BashLexer':        'shell-session',
+    'BatchLexer':       'doscon',
+    'PowerShellLexer':  'ps1con',
+    'TcshLexer':        'tcshcon',
+    'Python2Lexer':     'pycon',
+    'PythonLexer':      'pycon',
+    'RdLexer':          'rconsole',
+    'SLexer':           'rconsole',
+    'PostgresLexer':    'psql',
+    'RubyLexer':        'rbconn',
+}
+
+def session_lexer(lexer):
+    lexer_name = lexer.__class__.__name__
+
+    if 'Session' in lexer_name:
+        return lexer
+    if 'Console' in lexer_name:
+        return lexer
+
+    if lexer_name in SESSION_TYPES:
+        return get_lexer_by_name(SESSION_TYPES[lexer_name])
+    else:
+        print(lexer, lexer_name, "not found in SESSION_TYPES")
+
+    return None
+
 
 def visit_session_html(self, node):
     formatter = self.highlighter.get_formatter(nowrap=True)
 
     if not hasattr(node, 'contains'):
-        print(node)
+        print("Warning no contents found on", node)
         return
 
     data_node = node.contains[0]
 
     content = data_node.rawsource
 
-    if True or not self.arguments or 'auto' == self.arguments[0]:
-        lexer = guess_lexer(content)
+    lang = data_node.get('language', 'auto')
+    if lang in ('auto', 'default'):
+        lexer_orig = guess_lexer(content)
     else:
-        lexer = get_lexer_by_name(self.arguments[0])
+        lexer_orig = get_lexer_by_name(lang)
 
-    lexer_name = lexer.__class__.__name__
-    if 'Session' not in lexer_name:
-        if lexer_name == 'BashLexer':
-            lexer = get_lexer_by_name('shell-session')
-        elif lexer_name == 'PowerShellLexer':
-            lexer = get_lexer_by_name('ps1con')
-        elif lexer_name == 'TcshSessionLexer':
-            lexer = get_lexer_by_name('tcshcon')
-        elif lexer_name == 'Python3Lexer':
-            lexer = get_lexer_by_name('pycon3')
-        elif lexer_name == 'PythonLexer':
-            lexer = get_lexer_by_name('pycon')
-        else:
-            return
-            raise self.error("""\
+    lexer = session_lexer(lexer_orig)
+    if lexer is None:
+        print("""\
 Session contents should be a XXXSession lexer like `console`, `doscon` or \
-`ps1con`. Got instead '{}'.""".format(lexer_name))
-
-    lexer_name = lexer.__class__.__name__
-    assert 'Session' in lexer_name
+`ps1con`. Got instead '{}'.""".format(lexer_orig))
+        return
 
     lang = data_node.get('language', 'default')
     linenos = data_node.get('linenos', False)
@@ -137,7 +149,7 @@ Session contents should be a XXXSession lexer like `console`, `doscon` or \
         if current_tokens[0][0] in (Token.Generic.Prompt, Token.Generic.Output):
             i = to_data_content(current_tokens[-1], i)
 
-        print(current_tokens, '\n', repr(o), '\n', repr(i), '\n')
+        #print(current_tokens, '\n', repr(o), '\n', repr(i), '\n')
         output.append(i)
 
     output.append('</pre>')
@@ -145,6 +157,7 @@ Session contents should be a XXXSession lexer like `console`, `doscon` or \
     output.append('</div>')
     self.body.append("".join(output))
     raise nodes.SkipNode
+
 
 def depart_session_html(self, node):
     return
