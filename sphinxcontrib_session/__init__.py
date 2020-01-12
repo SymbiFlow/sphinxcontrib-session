@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 # coding: utf-8
 
+import logging
+import os
 import re
 
-import os
 from shutil import copyfile
 
 from docutils import nodes
@@ -18,6 +19,8 @@ from pygments.token import Token
 from pygments.lexers import get_lexer_by_name, guess_lexer
 from pygments.formatters import HtmlFormatter
 
+
+logger = logging.getLogger(__name__)
 
 
 # --------------------------
