@@ -103,9 +103,7 @@ class session(nodes.Element): pass
 def visit_session_html(self, node):
 
     if not hasattr(node, 'contains'):
-        logger.warning(
-            "Warning no contents found on {}".format(node),
-            location=location)
+        logger.warning("Warning no contents found on {}".format(node))
         return
     data_node = node.contains[0]
 
