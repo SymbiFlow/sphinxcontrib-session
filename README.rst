@@ -8,8 +8,8 @@ Sphinx Contrib Session
 Setting Up
 ----------
 
-In ``conf.py`` add ``'sphinxcontrib-session'`` to the list of extensions as
-shown below;
+In ``conf.py`` add ``'sphinxcontrib_session'`` to the list of extensions as
+shown below (note the underscore);
 
 .. code-block:: python
         :caption: conf.py
