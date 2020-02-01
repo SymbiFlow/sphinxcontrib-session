@@ -36,7 +36,7 @@ https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#dire
 
 .. code:: rst
 
-    .. session:: [<language> [<prompts> [<modifier>]]]
+    .. session:: [language]
 
        <statements>
 
