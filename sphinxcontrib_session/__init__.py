@@ -37,10 +37,14 @@ SPAN_REGEX = {}
 
 
 def rewrite_span(s, t):
+    """
+    >>> s = '<span class="gp">&gt;&gt;&gt; </span>'
+    >>> rewrite_span(s, Token.Generic.Prompt)
+    '<span class="gp" data-content="&gt;&gt;&gt; "></span>'
+    """
     if t not in SPAN_REGEX:
         klass = token.STANDARD_TYPES[t]
-
-        SPAN_REGEX[t] = re.compile('<span class="({})">([^<]*)</span>(\\s+)'.format(klass), re.DOTALL)
+        SPAN_REGEX[t] = re.compile('<span class="({})">([^<]*?)</span>(\\s*)'.format(klass), re.DOTALL)
 
     regex = SPAN_REGEX[t]
     return regex.sub(rewrite_match, s)

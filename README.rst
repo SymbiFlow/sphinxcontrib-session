@@ -26,6 +26,24 @@ shown below (note the underscore);
         ]
 
 
+Example
+-------
+
+.. session:: pycon
+
+   >>> h = 'hello'
+   >>> print('hello')
+   hello
+   >>> for i in hello:
+   ...     print(i)
+   h
+   e
+   l
+   l
+   o
+   >>>
+
+
 Syntax
 ------
 
