@@ -38,16 +38,23 @@ SPAN_REGEX = {}
 
 def rewrite_span(s, t):
     """
-    >>> s = '<span class="gp">&gt;&gt;&gt; </span>'
+    >>> s = '<span class="gp">&gt;&gt;&gt; </span> '
     >>> rewrite_span(s, Token.Generic.Prompt)
-    '<span class="gp" data-content="&gt;&gt;&gt; "></span>'
+    '<span class="gp" data-content="&gt;&gt;&gt; "> </span>'
     """
     if t not in SPAN_REGEX:
         klass = token.STANDARD_TYPES[t]
-        SPAN_REGEX[t] = re.compile('<span class="({})">([^<]*?)</span>(\\s*)'.format(klass), re.DOTALL)
+        SPAN_REGEX[t] = re.compile('<span class="({})">([^<]*?)</span>(\\n*)'.format(klass), re.DOTALL)
 
     regex = SPAN_REGEX[t]
     return regex.sub(rewrite_match, s)
+
+
+def rewrite_spans(o):
+    for t in [Token.Generic.Prompt, Token.Generic.Output]:
+        o = rewrite_span(o, t)
+    return o
+
 
 # --------------------------
 
@@ -131,9 +138,7 @@ def visit_session_html(self, node):
         **highlight_args
     )
 
-    o = highlighted
-    for t in [Token.Generic.Prompt, Token.Generic.Output]:
-        o = rewrite_span(o, t)
+    o = rewrite_spans(highlighted)
 
     starttag = self.starttag(
         node, 'div', suffix='', CLASS='highlight-%s notranslate' % lang)
