@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+Sphinx directive for "sessions", like typing into a console or Python prompt.
+"""
+
 import os
 
 from setuptools import setup, find_packages
@@ -22,9 +26,7 @@ tests_require = [
 setup(
     name='sphinxcontrib-session',
     version='0.0.1',
-    description="""
-Sphinx directive for "sessions", like typing into a console or Python prompt.
-""",
+    description=__doc__.strip(),
     long_description=README,
     long_description_content_type='text/x-rst',
     classifiers=[
