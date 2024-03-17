@@ -154,8 +154,8 @@ def _is_html(app):
     return app.builder.name in ('html', 'readthedocs')
 
 
-def add_stylesheet(app):
-    app.add_stylesheet('session.css')
+def add_css_file(app):
+    app.add_css_file('session.css')
 
 
 def copy_stylesheet(app, exception):
@@ -169,7 +169,7 @@ def copy_stylesheet(app, exception):
 # --------------------------
 
 def setup(app):
-    app.connect('builder-inited', add_stylesheet)
+    app.connect('builder-inited', add_css_file)
     app.connect('build-finished', copy_stylesheet)
     app.add_directive('session', SessionDirective)
     app.add_node(session, html=(visit_session_html, depart_session_html))
